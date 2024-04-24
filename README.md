@@ -1,6 +1,7 @@
 Anda adalah seorang data scientist di sebuah bank yang memiliki tugas untuk membuat model
 klasifikasi churn nasabah. Anda diberikan data sesuai dengan arahan yang telah dijelaskan di
 atas. Untuk memenuhi tugas ini beberapa step berikut perlu dilakukan, yaitu:
+
 1. Membuat pemodelan dengan machine learning, dimana anda diminta untuk
 melakukan semua proses pre-processing data yang dibutuhkan sebelum pemodelan klasifikasi.
 Melakukan training machine learning dengan menbandingkan 2 algoritma Random Forest dan
