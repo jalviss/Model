@@ -6,7 +6,7 @@ def main():
     st.title("Churn Prediction")
     st.write("Use this app to predict customer churn based on their profile.")
 
-    # User input section
+    # User input
     credit_score = st.number_input("Credit Score:")
     geography = st.selectbox("Geography:", ["France", "Germany", "Spain"])  # Adjust options based on data
     gender = st.selectbox("Gender:", ["Male", "Female"])
@@ -18,7 +18,7 @@ def main():
     is_active_member = st.selectbox("Is Active Member?", ["Yes", "No"])
     estimated_salary = st.number_input("Estimated Salary:")
 
-    # Prepare user input as a DataFrame
+    # change input to df
     data = pd.DataFrame({
         "CreditScore": [credit_score],
         "Geography": [geography],
@@ -35,21 +35,21 @@ def main():
     print(data)
 
     def load_scaler_encoder(scaler_path="scaler.pkl", encoder_path="encoder.pkl"):
-        # load sclaer and encoder (saya gabisa pakai joblib)
+        # load sclaler and encoder (saya gabisa pakai joblib)
         with open(scaler_path, "rb") as scaler_file:
             scalers = pickle.load(scaler_file)
         with open(encoder_path, "rb") as encoder_file:
             encoder = pickle.load(encoder_file)
         return scalers, encoder
 
-    # Make prediction button with a loading indicator
+    # Make prediction button
     if st.button("Predict Churn Risk"):
         all_filled = credit_score and geography and gender and age and tenure and balance and num_of_products and has_cr_card and is_active_member and estimated_salary
         if not all_filled:
             st.error("Please fill in all fields before submitting.")
             return
         
-        # Load the scalers and encoder
+        # Load the scaler and encoder
         scaler, encoder = load_scaler_encoder()
 
         cat = ['Geography', 'Gender']
@@ -72,9 +72,8 @@ def main():
                 model = pickle.load(model_file)
 
             # Make prediction
-            prediction = model.predict(data)[0]  # Assuming prediction is a probability
+            prediction = model.predict(data)[0]
 
-            # Display prediction with clear interpretation
             if prediction == 1:
                 st.write("Predicted: **CHURN**")
             else:
