@@ -35,6 +35,7 @@ def main():
     print(data)
 
     def load_scaler_encoder(scaler_path="scaler.pkl", encoder_path="encoder.pkl"):
+        # load sclaer and encoder (saya gabisa pakai joblib)
         with open(scaler_path, "rb") as scaler_file:
             scalers = pickle.load(scaler_file)
         with open(encoder_path, "rb") as encoder_file:
@@ -66,7 +67,7 @@ def main():
         data[con] = scaler.transform(data[con])
         
         with st.spinner("Making prediction..."):
-            # Load the pickled model
+            # Load the pickled model (saya gabisa pakai joblib)
             with open("best_model.pkl", "rb") as model_file:
                 model = pickle.load(model_file)
 
