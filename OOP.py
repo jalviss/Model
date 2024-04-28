@@ -19,7 +19,6 @@ class DataHandler:
 
     def load_data(self):
         self.data = pd.read_csv(self.file_path)
-        
         print(self.data.head())
 
     def dropNA(self):
@@ -121,7 +120,7 @@ model_handler = ModelHandler(input_df, output_df)
 model_handler.split_data()
 
 model_handler.OHE(['Geography', 'Gender'])
-model_handler.RobustScaler(['CreditScore', 'Balance', 'EstimatedSalary'])
+model_handler.RobustScaler(['CreditScore', 'Balance', 'EstimatedSalary', 'Age'])
 
 model_handler.createModel()
 model_handler.train()

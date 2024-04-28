@@ -1,7 +1,6 @@
 import streamlit as st
 import pickle  
 import pandas as pd  
-from sklearn.preprocessing import OneHotEncoder  
 
 def main():
     st.title("Churn Prediction")
@@ -11,37 +10,28 @@ def main():
     credit_score = st.number_input("Credit Score:")
     geography = st.selectbox("Geography:", ["France", "Germany", "Spain"])  # Adjust options based on data
     gender = st.selectbox("Gender:", ["Male", "Female"])
-    age = st.number_input("Age:")
-    tenure = st.number_input("Tenure (years with company):")
+    age = st.number_input("Age:",0,100)
+    tenure = st.number_input("Tenure (years with company):",0,10)
     balance = st.number_input("Balance (account balance):")
-    num_of_products = st.number_input("Number of Products:")
+    num_of_products = st.number_input("Number of Products:",1,4)
     has_cr_card = st.selectbox("Has Credit Card?", ["Yes", "No"])
     is_active_member = st.selectbox("Is Active Member?", ["Yes", "No"])
     estimated_salary = st.number_input("Estimated Salary:")
 
     # Prepare user input as a DataFrame
-    inputs = {'CreditScore': int(credit_score), 
-            'Geography': geography, 
-            'Gender': gender, 
-            'Age': int(age), 
-            'Tenure':int(tenure), 
-            'Balance': int(balance), 
-            'NumOfProducts':int(num_of_products),
-            'HasCrCard': (1 if has_cr_card == "Yes" else 0), 
-            'IsActiveMember': (1 if is_active_member == "Yes" else 0),
-            'EstimatedSalary':int(estimated_salary)
-            }
+    data = pd.DataFrame({
+        "CreditScore": [credit_score],
+        "Geography": [geography],
+        "Gender": [gender],
+        "Age": [age],
+        "Tenure": [tenure],
+        "Balance": [balance],
+        "NumOfProducts": [num_of_products],
+        "HasCrCard": [1 if has_cr_card == "Yes" else 0],
+        "IsActiveMember": [1 if is_active_member == "Yes" else 0],
+        "EstimatedSalary": [estimated_salary]
+    })
     
-    data=pd.DataFrame([list(inputs.values())], columns=['CreditScore', 
-                                                    'Geography',
-                                                    'Gender',
-                                                    'Age', 
-                                                    'Tenure', 
-                                                    'Balance', 
-                                                    'NumOfProducts', 
-                                                    'HasCrCard', 
-                                                    'IsActiveMember', 
-                                                    'EstimatedSalary'])
     print(data)
 
     def load_scaler_encoder(scaler_path="scaler.pkl", encoder_path="encoder.pkl"):
@@ -59,10 +49,10 @@ def main():
             return
         
         # Load the scalers and encoder
-        scalers, encoder = load_scaler_encoder()
+        scaler, encoder = load_scaler_encoder()
 
         cat = ['Geography', 'Gender']
-        con = ['CreditScore', 'Balance', 'EstimatedSalary']
+        con = ['CreditScore', 'Balance', 'EstimatedSalary', 'Age']
         
         # encode
         data_subset = data[cat]
@@ -73,7 +63,7 @@ def main():
 
 
         # scaling
-        data[con] = scalers.transform(data[con])
+        data[con] = scaler.transform(data[con])
         
         with st.spinner("Making prediction..."):
             # Load the pickled model
