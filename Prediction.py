@@ -2,6 +2,16 @@ import streamlit as st
 import pickle  
 import pandas as pd  
 
+# Load the trained model
+model = pickle.load(open('best_model.pkl', 'rb'))
+
+# Load the encoder
+encoder = pickle.load(open('encoder.pkl', 'rb'))
+
+# Load the scaler
+scaler = pickle.load(open('scaler.pkl', 'rb'))
+
+
 def main():
     st.title("Churn Prediction")
     st.write("Use this app to predict customer churn based on their profile.")
@@ -34,23 +44,12 @@ def main():
     
     print(data)
 
-    def load_scaler_encoder(scaler_path="scaler.pkl", encoder_path="encoder.pkl"):
-        # load sclaler and encoder (saya gabisa pakai joblib)
-        with open(scaler_path, "rb") as scaler_file:
-            scalers = pickle.load(scaler_file)
-        with open(encoder_path, "rb") as encoder_file:
-            encoder = pickle.load(encoder_file)
-        return scalers, encoder
-
     # Make prediction button
     if st.button("Predict Churn Risk"):
         all_filled = credit_score and geography and gender and age and tenure and balance and num_of_products and has_cr_card and is_active_member and estimated_salary
         if not all_filled:
             st.error("Please fill in all fields before submitting.")
             return
-        
-        # Load the scaler and encoder
-        scaler, encoder = load_scaler_encoder()
 
         cat = ['Geography', 'Gender']
         con = ['CreditScore', 'Balance', 'EstimatedSalary', 'Age']
@@ -62,16 +61,10 @@ def main():
         data = pd.concat([data, data_encoded], axis=1)
         data.drop(cat, axis=1, inplace=True)
 
-
         # scaling
         data[con] = scaler.transform(data[con])
         
         with st.spinner("Making prediction..."):
-            # Load the pickled model (saya gabisa pakai joblib)
-            with open("best_model.pkl", "rb") as model_file:
-                model = pickle.load(model_file)
-
-            # Make prediction
             prediction = model.predict(data)[0]
 
             if prediction == 1:
